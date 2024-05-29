@@ -4,11 +4,17 @@ import { TextField, Button } from '@mui/material';
 function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [savedData, setSavedData] = useState<{email: string, password: string} | null>(null);
 
   const handleSubmit = (event: { preventDefault: () => void; }) => {
     event.preventDefault();
-    console.log({ email, password });
-    // Aquí puedes manejar los datos del formulario
+    setSavedData({ email, password });
+  };
+
+  const handleShowData = () => {
+    if (savedData) {
+      alert(`Email: ${savedData.email}, Password: ${savedData.password}`);
+    }
   };
 
   return (
@@ -45,9 +51,17 @@ function Login() {
         marginTop: 2,
         marginBottom: 2,
         marginLeft: 2,
-
       }} >
         Login
+      </Button>
+      <Button variant="outlined" color="primary" onClick={handleShowData}
+      sx={{
+        display: 'flex',
+        marginTop: 2,
+        marginBottom: 2,
+        marginLeft: 2,
+      }} >
+        Show Saved Data
       </Button>
     </form>
   );

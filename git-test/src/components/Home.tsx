@@ -25,9 +25,6 @@ const Home = () => {
             flexDirection: 'column',
             alignItems: 'center',
             justifyContent: 'center',
-            minHeight: '100vh',
-            padding: 2,
-            backgroundColor: '#f5f5f5' 
         }}>
             <Button variant="outlined" color="secondary" onClick={fetchData} 
             sx={{
