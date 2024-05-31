@@ -1,4 +1,4 @@
-import { PokemonData } from './PokemonInterfaces';
+import { PokemonData } from './interfaces/PokemonInterfaces';
 
 const fetchPokemonData = async (): Promise<PokemonData> => {
   const endpointUrl = import.meta.env.VITE_ENDPOINT_URL;
