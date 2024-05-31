@@ -1,36 +1,8 @@
 import { useState } from 'react';
 import { Button, Card, CardContent, CardMedia, Typography, CardHeader, Box } from '@mui/material';
 import ReactQuill from 'react-quill';
-import 'react-quill/dist/quill.snow.css'; // Importa los estilos de React Quill
+import 'react-quill/dist/quill.snow.css'; 
 
-interface PokemonData {
-  name: string;
-  abilities: Ability[];
-  sprites: Sprites;
-}
-
-export interface Ability {
-  ability:   Species;
-  is_hidden: boolean;
-  slot:      number;
-}
-
-export interface Species {
-  name: string;
-  url:  string;
-}
-
-export interface Sprites {
-  back_default:       string;
-  back_female:        null;
-  back_shiny:         string;
-  back_shiny_female:  null;
-  front_default:      string;
-  front_female:       null;
-  front_shiny:        string;
-  front_shiny_female: null;
-  animated?:          Sprites;
-}
 
 const Home = () => {
   const [data, setData] = useState<PokemonData | null>(null);
@@ -134,7 +106,3 @@ const Home = () => {
 
 
 export default Home;
-
-
-
-
