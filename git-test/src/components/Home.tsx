@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Button, Card, CardContent, CardMedia, Typography, CardHeader, Box } from '@mui/material';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css'; 
-
+import { PokemonData } from './PokemonInterfaces';
 
 const Home = () => {
   const [data, setData] = useState<PokemonData | null>(null);
