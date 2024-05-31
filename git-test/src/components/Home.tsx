@@ -3,81 +3,53 @@ import { Button, Card, CardContent, CardMedia, Typography, CardHeader, Box } fro
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css'; 
 import { PokemonData } from './PokemonInterfaces';
+import fetchPokemonData from './fetchPokemonData';
+import { homeStyles } from './homeStyles';
+
+
+
 
 const Home = () => {
+
+  const classes = homeStyles();
   const [data, setData] = useState<PokemonData | null>(null);
   const [editorContent, setEditorContent] = useState('');
 
-  const fetchData = async () => {
-    const endpointUrl = import.meta.env.VITE_ENDPOINT_URL;
-    const response = await fetch(endpointUrl);
-    const data: PokemonData = await response.json();
+  const handleFetchData = async () => {
+    const data = await fetchPokemonData();
     setData(data);
   };
 
-
   return (
-    <Box
-      sx={{
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-      }}
-    >
+    <Box className={classes.container}>
       <Button
         variant="outlined"
         color="secondary"
-        onClick={fetchData}
-        sx={{
-          marginTop: '20px',
-          marginBottom: '20px',
-          padding: '10px 20px',
-          borderRadius: '12px',
-          borderWidth: '2px',
-          '&:hover': {
-            borderColor: 'darkpurple',
-            color: 'darkpurple',
-          },
-        }}
+        onClick={handleFetchData}
+        className={classes.fetchButton}
       >
         Traer datos de la API
       </Button>
-            {data && (
-        <Card
-          sx={{
-            width: '300px',
-            mt: 2,
-            boxShadow: 3,
-            borderRadius: '12px',
-            borderColor: 'darkpurple',
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            backgroundColor: '#ffffff',
-            padding: '20px',
-          }}
-        >
+      {data && (
+        <Card className={classes.card}>
           <CardHeader
-            avatar={data.name.charAt(0).toUpperCase()
-              
-             } 
+            avatar={data.name.charAt(0).toUpperCase()}
             title={
               <Typography variant="h6" color="text.primary">
                 {data.name.toUpperCase()}
               </Typography>
             }
             subheader="Pokemon Abilities"
-            sx={{ textAlign: 'center' }}
+            className={classes.cardHeader}
           />
           <CardMedia
             component="img"
             height="194"
             image={data.sprites.front_default}
             alt={data.name}
-            sx={{ objectFit: 'contain', marginTop: '10px' }}
+            className={classes.cardMedia}
           />
-          <CardContent sx={{ width: '100%', textAlign: 'center' }}>
+          <CardContent className={classes.cardContent}>
             <Typography variant="h6" color="text.primary">
               Abilities:
             </Typography>
@@ -87,7 +59,7 @@ const Home = () => {
               </Typography>
             ))}
           </CardContent>
-          <Box sx={{ width: '100%', mt: 2 }}>
+          <Box className={classes.quillContainer}>
             <ReactQuill
               theme="snow"
               value={editorContent}
@@ -98,11 +70,8 @@ const Home = () => {
           </Box>
         </Card>
       )}
-
     </Box>
   );
 };
-
-
 
 export default Home;
