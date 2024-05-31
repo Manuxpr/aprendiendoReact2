@@ -17,6 +17,17 @@ function Login() {
     }
   };
 
+  const handlePasswordChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setPassword(event.target.value);
+  };
+
+  const handleEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setEmail(event.target.value);
+  };
+
+
+
+
   return (
     <form onSubmit={handleSubmit} style={{
       alignItems: 'center',
@@ -29,7 +40,7 @@ function Login() {
         type="email"
         required
         value={email}
-        onChange={(e) => setEmail(e.target.value)}
+        onChange={handleEmailChange}
         sx={{
           margin: 2,
           display: 'flex',
@@ -43,7 +54,7 @@ function Login() {
         type="password"
         required
         value={password}
-        onChange={(e) => setPassword(e.target.value)}
+        onChange={handlePasswordChange}
       />
       <Button variant="outlined" color="error" type="submit"
         sx={{
