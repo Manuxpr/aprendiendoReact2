@@ -2,10 +2,23 @@ import {  Box, Typography, Link } from '@mui/material';
 import logo from '../../public/logo.png';
 import colors from './colors/colorsTheme';
 import { MainBox,LoginCard ,LoginBox,LogoBox,LoginButton, LoginEmailTextField, LoginPasswordTextField} from './loginComponents';
+import { useState } from 'react';
 
 
 const LoginNeoCK = () => {
 
+  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState('');
+  const handleEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setEmail(event.target.value);
+  };
+  const [showPassword, setShowPassword] = useState(false);
+  const handlePasswordVisibility = () => {
+      setShowPassword(!showPassword);
+  };
+  const handlePasswordChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+      setPassword(event.target.value);
+  };
   return (
     <>
       <MainBox>
@@ -25,17 +38,17 @@ const LoginNeoCK = () => {
               <LogoBox>
                 <Typography variant="h4" align="center" sx={{ color: colors.yellow, fontWeight: 'bold' }}>
                   neoTOOLS
-                  <Box component="span" sx={{ color: colors.text.primary, fontWeight: 'normal' }}> by neoCK</Box>
+                  <Box component="span" sx={{ color:colors.grey[200], fontWeight: 'normal' }}> by neoCK</Box>
                 </Typography>
               </LogoBox>
             </Box>
           </LoginBox>
-          <LoginEmailTextField />
-          <LoginPasswordTextField />
+          <LoginEmailTextField email={email} handleEmailChange={handleEmailChange}/>
+          <LoginPasswordTextField  password={password} handlePasswordChange={handlePasswordChange} showPassword={showPassword} handlePasswordVisibility={handlePasswordVisibility} />
           <Link variant="body2" sx={{ marginBottom: '10px', color: colors.text.primary }}>
             ¿Has olvidado tu contraseña?
           </Link>
-          <LoginButton>
+          <LoginButton email={email} password={password}>
             INICIAR SESIÓN
           </LoginButton>
         </LoginCard>
