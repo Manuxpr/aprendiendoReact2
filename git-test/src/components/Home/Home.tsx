@@ -4,14 +4,12 @@ import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css'; 
 import { PokemonData } from '../../interfaces/PokemonInterfaces';
 import { fetchPokemonData } from '../../fetchPokemonData';
-import { homeStyles } from './homeStyles';
 
 
 
 
 const Home = () => {
 
-  const classes = homeStyles();
   const [data, setData] = useState<PokemonData | null>(null);
   const [editorContent, setEditorContent] = useState('');
 
@@ -21,17 +19,17 @@ const Home = () => {
   };
 
   return (
-    <Box className={classes.container}>
+    <Box>
       <Button
         variant="outlined"
         color="secondary"
         onClick={handleFetchData}
-        className={classes.fetchButton}
+      
       >
         Traer datos de la API
       </Button>
       {data && (
-        <Card className={classes.card}>
+        <Card >
           <CardHeader
             avatar={data.name.charAt(0).toUpperCase()}
             title={
@@ -40,16 +38,16 @@ const Home = () => {
               </Typography>
             }
             subheader="Pokemon Abilities"
-            className={classes.cardHeader}
+      
           />
           <CardMedia
             component="img"
             height="194"
             image={data.sprites.front_default}
             alt={data.name}
-            className={classes.cardMedia}
+            
           />
-          <CardContent className={classes.cardContent}>
+          <CardContent>
             <Typography variant="h6" color="text.primary">
               Abilities:
             </Typography>
@@ -59,7 +57,7 @@ const Home = () => {
               </Typography>
             ))}
           </CardContent>
-          <Box className={classes.quillContainer}>
+          <Box>
             <ReactQuill
               theme="snow"
               value={editorContent}
