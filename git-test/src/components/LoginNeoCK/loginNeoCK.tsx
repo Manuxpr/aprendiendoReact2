@@ -8,9 +8,9 @@ import { StyleLoginCard, StyleLogoBox, StyleUpperLoginBox, StyledCardContainer, 
 
 const LoginNeoCK = () => {
 
-  const [email, setEmail] = useState<string>('');
-  const handleEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-      setEmail(event.target.value);
+  const [user, setUser] = useState<string>('');
+  const handleUserChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setUser(event.target.value);
   };
   const [password, setPassword] = useState<string>('');
   const [showPassword, setShowPassword] = useState<boolean>(false);
@@ -20,6 +20,24 @@ const LoginNeoCK = () => {
   const handlePasswordChange = (event: React.ChangeEvent<HTMLInputElement>) => {
       setPassword(event.target.value);
   };
+
+  const handleLogin = async () => {
+    try{
+      const response = await fetch('https://dev.neock.es/api/sac/v2/unlogged/login.php', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({user, password}),
+      });
+
+      const data = await response.json();
+      const accessToken = data.access_token;
+      localStorage.setItem('accessToken', accessToken);
+    }catch(error){
+      console.log('Error en el login', error);
+    }
+  }
   return (
     <>
       <StyledCardContainer>
@@ -52,8 +70,8 @@ const LoginNeoCK = () => {
             label="Email"
             variant="outlined"
             size='medium'
-            value={email}
-            onChange={handleEmailChange}
+            value={user}
+            onChange={handleUserChange}
             sx={{ width: '552px', height: '56px', marginBottom: '10px' }}
             InputProps={{ style: { fontSize: '1.2rem' } }}
           />
@@ -92,6 +110,7 @@ const LoginNeoCK = () => {
                 variant="contained"
                 startIcon={null}
                 endIcon={null}
+                onClick={handleLogin}   
             >
             INICIAR SESIÓN
           </StyledLoginButton>

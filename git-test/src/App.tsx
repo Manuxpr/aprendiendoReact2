@@ -4,6 +4,8 @@ import "./App.css";
 import Login from "./components/Login/Login";
 import Home from "./components/Home/Home";
 import LoginNeoCK from "./components/LoginNeoCK/loginNeoCK";
+import { AuthGuard } from "./auth/AuthGuard";
+import { PokemonTable } from "./components/pokemonTable/PokemonTable";
 
 function App() {
   return (
@@ -19,6 +21,10 @@ function App() {
         </Toolbar>
       </AppBar>
       <Routes>
+        <Route  element={<AuthGuard />}>
+          <Route path="/pokemonTable" element={<PokemonTable />} />
+        </Route>
+          
         <Route path="/login" element={<Login />} />
         <Route path="/" element={<Home />} />
         <Route path="/loginNeoCK" element={<LoginNeoCK />} />
