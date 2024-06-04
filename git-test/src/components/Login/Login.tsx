@@ -2,8 +2,8 @@ import { useState } from 'react';
 import { TextField, Button } from '@mui/material';
 
 function Login() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState<string>('');
+  const [password, setPassword] = useState<string>('');
   const [savedData, setSavedData] = useState<{ email: string, password: string } | null>(null);
 
   const handleSubmit = (event: { preventDefault: () => void; }) => {

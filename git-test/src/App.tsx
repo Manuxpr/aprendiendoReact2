@@ -1,9 +1,9 @@
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import { AppBar, Toolbar, Typography, Button } from '@mui/material';
 import "./App.css";
-import Login from "./components/Login";
-import Home from "./components/Home";
-import LoginNeoCK from "./components/loginNeoCK";
+import Login from "./components/Login/Login";
+import Home from "./components/Home/Home";
+import LoginNeoCK from "./components/LoginNeoCK/loginNeoCK";
 
 function App() {
   return (
