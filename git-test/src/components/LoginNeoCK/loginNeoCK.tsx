@@ -34,6 +34,7 @@ const LoginNeoCK = () => {
       const data = await response.json();
       const accessToken = data.access_token;
       localStorage.setItem('accessToken', accessToken);
+      alert('Login correcto');
     }catch(error){
       console.log('Error en el login', error);
     }

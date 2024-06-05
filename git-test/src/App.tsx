@@ -8,6 +8,9 @@ import { AuthGuard } from "./auth/AuthGuard";
 import { PokemonTable } from "./components/pokemonTable/PokemonTable";
 
 function App() {
+  const handleLogOut = () => {
+    localStorage.removeItem('accessToken');
+  }
   return (
     <Router>
       <AppBar color='transparent' position="static">
@@ -18,13 +21,14 @@ function App() {
           <Button color="inherit" component={Link} to="/">Home</Button>
           <Button color="inherit" component={Link} to="/login">Login</Button>
           <Button color="inherit" component={Link} to="/loginNeoCK">LoginNEOCK</Button>
+          <Button color="inherit" component={Link} to="/pokemonTable">Pokemon Table</Button>
+          <Button color="inherit" component={Link} to="/loginNeoCK" onClick={handleLogOut}>Logout</Button>
         </Toolbar>
       </AppBar>
       <Routes>
         <Route  element={<AuthGuard />}>
           <Route path="/pokemonTable" element={<PokemonTable />} />
         </Route>
-          
         <Route path="/login" element={<Login />} />
         <Route path="/" element={<Home />} />
         <Route path="/loginNeoCK" element={<LoginNeoCK />} />
