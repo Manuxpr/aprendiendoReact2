@@ -23,7 +23,7 @@ const LoginNeoCK = () => {
 
   const handleLogin = async () => {
     try{
-      const response = await fetch('https://dev.neock.es/api/sac/v2/unlogged/login.php', {
+      const response = await fetch(import.meta.env.VITE_ENDPOINT_LOGIN, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

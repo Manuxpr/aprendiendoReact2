@@ -26,3 +26,18 @@ export interface PokemonData {
     front_shiny_female: null;
     animated?:          Sprites;
   }
+
+export interface PokemonDataTable{
+  name: string;
+  types: Type[];
+  abilities: Ability[];
+  weight: number;
+}
+
+export interface Type {
+  slot: number;
+  type: Species;
+}
+
+
+
