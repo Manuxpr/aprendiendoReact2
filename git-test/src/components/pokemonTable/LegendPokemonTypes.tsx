@@ -9,7 +9,7 @@ const pokemonTypes = [
   
   export const PokemonLegend = () => {
     return (
-      <Paper elevation={6} style={{ padding: '1rem', maxWidth: '400px' }}>
+      <Paper elevation={6} style={{ padding: '1rem', maxWidth: '18rem',height: "50rem" }}>
         <Typography variant="h6" gutterBottom>Leyenda</Typography>
         <Box display="flex" flexDirection="column" gap="0.5rem">
           {pokemonTypes.map((type) => (
