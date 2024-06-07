@@ -1,9 +1,11 @@
-import { Box, Typography, TextField, Button, TableContainer, Paper, Table, TableHead, TableRow, TableCell, TableBody, Chip, InputAdornment } from "@mui/material";
+import { Box, Typography, TextField, Button, TableContainer, Paper, Table, TableHead, TableRow, TableCell, TableBody, Chip, InputAdornment, Popover } from "@mui/material";
 import { useState, useEffect } from "react";
 import { fetchPokemonDataTable } from "../../fetchPokemonData";
 import { PokemonDataTable } from "../../interfaces/PokemonInterfaces";
 import colors from '../../colors/colorsTheme';
-import { Search } from "@mui/icons-material";
+import { FilterListRounded, InfoOutlined, SaveAltRounded, Search } from "@mui/icons-material";
+import { useDebounce } from "../Debounce";
+import { PokemonLegend } from "./LegendPokemonTypes";
 
 
 const pokemonNames = [
@@ -22,10 +24,13 @@ const pokemonNames = [
   "dragonite"
 ];
 
-
-
 export const PokemonTable = () => {
   const [pokemonData, setPokemonData] = useState<PokemonDataTable[]>([]);
+  const [searchPokem, setSearchPokem] = useState<string>("");
+  const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
+
+  const debouncedSearchTerm = useDebounce(searchPokem, 500); 
+
 
   useEffect(() => {
     const fetchData = async () => {
@@ -39,8 +44,28 @@ export const PokemonTable = () => {
 
     fetchData();
   }, []);
-  
+
   console.log(pokemonData);
+
+  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchPokem(event.target.value);
+  };
+
+  const filteredPokemonData = pokemonData.filter((pokemon) =>
+    pokemon.name.toLowerCase().includes(debouncedSearchTerm.toLowerCase())
+  );
+
+
+  const handleLegendClick = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleLegendClose = () => {
+    setAnchorEl(null);
+  };
+
+  const open = Boolean(anchorEl);
+  const id = open ? 'simple-popover' : undefined;
 
 
   return (
@@ -50,20 +75,21 @@ export const PokemonTable = () => {
         <TextField
           variant="outlined"
           placeholder="Nombre del pokemon"
+          value={searchPokem}
+          onChange={handleSearchChange}
           InputProps={{
             endAdornment: (
               <InputAdornment position="end">
-                <Search/>
+                <Search />
               </InputAdornment>
             ),
           }}
-          sx={{ width:"54rem"}}
-
+          sx={{ width: "54rem" }}
         />
         <Box>
-          <Button variant="contained" color="secondary">EXPORTAR TABLA</Button>
-          <Button variant="contained" color="secondary" style={{ marginLeft: '0.6rem' }}>BÚSQUEDA AVANZADA</Button>
-          <Button variant="outlined" style={{ marginLeft: '0.7rem' }}>LEYENDA</Button>
+          <Button variant="contained" color="secondary" endIcon={<SaveAltRounded/>}>EXPORTAR TABLA</Button>
+          <Button variant="contained" color="secondary" endIcon={<FilterListRounded/>} style={{ marginLeft: '0.6rem' }}>BÚSQUEDA AVANZADA</Button>
+          <Button variant="outlined" endIcon={<InfoOutlined />} style={{ marginLeft: '0.7rem' }} onClick={handleLegendClick}>LEYENDA</Button>
         </Box>
       </Box>
       <TableContainer component={Paper}>
@@ -77,29 +103,43 @@ export const PokemonTable = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {pokemonData.map((pokemon: PokemonDataTable) => (
+            {filteredPokemonData.map((pokemon: PokemonDataTable) => (
               <TableRow key={pokemon.name}>
                 <TableCell>{pokemon.name}</TableCell>
                 <TableCell>
                   {pokemon.types.map((type) => (
-                    <Chip label={type.type.name} key={type.type.name} style={{ margin: '2px',backgroundColor:colors.chip[type.type.name]}} />
+                    <Chip label={type.type.name} key={type.type.name} style={{ margin: '2px', backgroundColor: colors.chip[type.type.name] }} />
                   ))}
                 </TableCell>
                 <TableCell>
-                  {pokemon.abilities.map((ability) => (
-                    <Chip label={ability.ability.name} key={ability.ability.name} style={{ margin: '2px' }} />
+                  {pokemon.abilities.map((ability, index) => (
+                    <Button key={index} variant="outlined" color="primary" sx={{marginRight:"0.2rem"}}>{ability.ability.name}</Button>
                   ))}
                 </TableCell>
-                <TableCell>{pokemon.weight} kgs</TableCell>
+                <TableCell>
+                  <Button variant="outlined" color="primary" sx={{marginRight:"0.2rem"}}>{pokemon.weight} kgs</Button>
+                </TableCell>
               </TableRow>
             ))}
           </TableBody>
         </Table>
       </TableContainer>
-      <Box display="flex" justifyContent="space-between" mt={2}>
-        <Typography>Página 1 de 13</Typography>
-        <Typography>Total: 15892 usuarios</Typography>
-      </Box>
+      <Popover
+        id={id}
+        open={open}
+        anchorEl={anchorEl}
+        onClose={handleLegendClose}
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'center',
+        }}
+        transformOrigin={{
+          vertical: 'top',
+          horizontal: 'center',
+        }}
+      >
+        <PokemonLegend />
+      </Popover>
     </Box>
   );
 }
