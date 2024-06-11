@@ -115,7 +115,7 @@ const LoginNeoCK: React.FC<LoginNeoCKProps> = ({ onLoginSuccess }) => {
           </StyledLoginButton>
         </StyleLoginCard>
       </StyledCardContainer>
-      <Typography variant="body2" color="text" sx={{ marginTop: '20px', display: 'flex' }}>
+      <Typography variant="body2" color="text" sx={{ marginTop: '20px', display: 'block' ,marginLeft:'42rem' }}>
         ¿Tienes problemas para iniciar sesión? <a href="mailto:soporte@neock.es">soporte@neock.es</a>
       </Typography>
     </>

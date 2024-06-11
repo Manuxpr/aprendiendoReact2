@@ -1,61 +1,62 @@
-import { Box, Typography, TextField, Button, TableContainer, Paper, Table, TableHead, TableRow, TableCell, TableBody, Chip, InputAdornment, Popover } from "@mui/material";
+import { Box, Typography, TextField, Button, TableContainer, Paper, Table, TableHead, TableRow, TableCell, TableBody, Chip, InputAdornment, Popover, TablePagination } from "@mui/material";
 import { useState, useEffect } from "react";
-import { fetchPokemonDataTable } from "../../fetchPokemonData";
-import { PokemonDataTable } from "../../interfaces/PokemonInterfaces";
+import { fetchPokemonDataTable, fetchPokemonList } from "../../fetchPokemonData";
+import { PokemonDataTable, TopLevel } from "../../interfaces/PokemonInterfaces";
 import colors from '../../colors/colorsTheme';
 import { FilterListRounded, InfoOutlined, SaveAltRounded, Search } from "@mui/icons-material";
 import { useDebounce } from "../Debounce";
 import { PokemonLegend } from "./LegendPokemonTypes";
 
-
-const pokemonNames = [
-  "pikachu",
-  "bulbasaur",
-  "charmander",
-  "squirtle",
-  "jigglypuff",
-  "meowth",
-  "psyduck",
-  "snorlax",
-  "eevee",
-  "vulpix",
-  "gengar",
-  "lapras",
-  "dragonite"
-];
-
 export const PokemonTable = () => {
   const [pokemonData, setPokemonData] = useState<PokemonDataTable[]>([]);
   const [searchPokem, setSearchPokem] = useState<string>("");
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [totalPokemon, setTotalPokemon] = useState(0);
 
-  const debouncedSearchTerm = useDebounce(searchPokem, 500); 
+  const debouncedSearchTerm = useDebounce(searchPokem, 500);
   const open = Boolean(anchorEl);
   const id = open ? 'simple-popover' : undefined;
 
+  const fetchData = async (offset: number, limit: number) => {
+    const pokemonList: TopLevel = await fetchPokemonList(offset, limit);
+    const data: PokemonDataTable[] = await Promise.all(
+      pokemonList.results.map(async (result) => {
+        const pokemon = await fetchPokemonDataTable(result.url);
+        return pokemon;
+      })
+    );
+    setPokemonData(data);
+    setTotalPokemon(pokemonList.count);
+  };
+
   useEffect(() => {
-    const fetchData = async () => {
-      const data: PokemonDataTable[] = [];
-      for (const name of pokemonNames) {
-        const result = await fetchPokemonDataTable(name);
-        data.push(result);
-      }
-      setPokemonData(data);
-    };
-
-    fetchData();
-  }, []);
-
-  console.log(pokemonData);
+    fetchData(page * rowsPerPage, rowsPerPage);
+  }, [page, rowsPerPage]);
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchPokem(event.target.value);
   };
 
-  const filteredPokemonData = pokemonData.filter((pokemon) =>
-    pokemon.name.toLowerCase().includes(debouncedSearchTerm.toLowerCase())
-  );
+  const handleChangePage = (event: unknown, newPage: number) => {
+    setPage(newPage);
+    fetchPokemonList(newPage * rowsPerPage, rowsPerPage);
+  };
+  
 
+  const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const newRowsPerPage = parseInt(event.target.value, 10);
+    setRowsPerPage(newRowsPerPage);
+    setPage(0);
+    fetchPokemonList(0, newRowsPerPage);
+  };
+
+  const filteredPokemonData = debouncedSearchTerm
+    ? pokemonData.filter((pokemon) =>
+        pokemon.name.toLowerCase().includes(debouncedSearchTerm.toLowerCase())
+      )
+    : pokemonData;
 
   const handleLegendClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -64,7 +65,6 @@ export const PokemonTable = () => {
   const handleLegendClose = () => {
     setAnchorEl(null);
   };
-
 
   return (
     <Box margin="3rem">
@@ -85,7 +85,7 @@ export const PokemonTable = () => {
           sx={{ width: "54rem" }}
         />
         <Box>
-          <Button variant="contained" color="secondary" endIcon={<SaveAltRounded/>}>EXPORTAR TABLA</Button>
+          <Button variant="contained" color="secondary" endIcon={<SaveAltRounded/>}>AÑADIR POKEMON</Button>
           <Button variant="contained" color="secondary" endIcon={<FilterListRounded/>} style={{ marginLeft: '0.6rem' }}>BÚSQUEDA AVANZADA</Button>
           <Button variant="outlined" endIcon={<InfoOutlined />} style={{ marginLeft: '0.7rem' }} onClick={handleLegendClick}>LEYENDA</Button>
         </Box>
@@ -119,6 +119,14 @@ export const PokemonTable = () => {
                 </TableCell>
               </TableRow>
             ))}
+            <TablePagination
+            component="div"
+            count={totalPokemon}
+            page={page}
+            onPageChange={handleChangePage}
+            rowsPerPage={rowsPerPage}
+            onRowsPerPageChange={handleChangeRowsPerPage}
+          />
           </TableBody>
         </Table>
       </TableContainer>

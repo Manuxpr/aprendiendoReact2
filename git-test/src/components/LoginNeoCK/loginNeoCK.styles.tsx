@@ -9,6 +9,7 @@ export const StyledCardContainer = styled(Box)(({ theme }) => ({
     alignItems: 'center',
     minHeight: '50%',
     padding: theme.spacing(2),
+    marginTop: theme.spacing(10),
   }));
 
 export const StyledLoginButton = styled(Button)(({ theme }) => ({
