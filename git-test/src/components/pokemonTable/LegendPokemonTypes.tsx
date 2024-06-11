@@ -2,12 +2,12 @@ import { Paper, Typography, Box, Chip } from '@mui/material';
 import colors from '../../colors/colorsTheme';
 
 
-const pokemonTypes = [
+export const pokemonTypes = [
     "fire", "water", "grass", "electric", "psychic", "ice", "dragon", "dark", "fairy",
     "normal", "fighting", "flying", "poison", "ground", "rock", "bug", "ghost", "steel"
   ];
   
-  export const PokemonLegend = () => {
+export const PokemonLegend = () => {
     return (
       <Paper elevation={6} style={{ padding: '1rem', maxWidth: '18rem',height: "50rem" }}>
         <Typography variant="h6" gutterBottom>Leyenda</Typography>
