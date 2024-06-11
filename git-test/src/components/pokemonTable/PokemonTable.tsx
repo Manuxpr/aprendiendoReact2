@@ -1,7 +1,7 @@
 import { Box, Typography, TextField, Button, TableContainer, Paper, Table, TableHead, TableRow, TableCell, TableBody, Chip, InputAdornment, Popover, TablePagination } from "@mui/material";
-import { useState, useEffect } from "react";
-import { fetchPokemonDataTable, fetchPokemonList } from "../../fetchPokemonData";
-import { PokemonDataTable, TopLevel } from "../../interfaces/PokemonInterfaces";
+import { useState, useEffect, useCallback } from "react";
+import { fetchPokemonDataAbilities, fetchPokemonDataTable, fetchPokemonList } from "../../fetchPokemonData";
+import { PokemonAbility, PokemonDataTable, TopLevel } from "../../interfaces/PokemonInterfaces";
 import colors from '../../colors/colorsTheme';
 import { FilterListRounded, InfoOutlined, SaveAltRounded, Search } from "@mui/icons-material";
 import { useDebounce } from "../Debounce";
@@ -14,6 +14,7 @@ export const PokemonTable = () => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [totalPokemon, setTotalPokemon] = useState(0);
+  const [ability, setAbility] = useState<PokemonAbility[]>([]);
 
   const debouncedSearchTerm = useDebounce(searchPokem, 500);
   const open = Boolean(anchorEl);
@@ -30,6 +31,19 @@ export const PokemonTable = () => {
     setPokemonData(data);
     setTotalPokemon(pokemonList.count);
   };
+
+  const fetchPokemonAbilities = useCallback(async () => {
+    const abilitiesList: TopLevel = await fetchPokemonDataAbilities();
+    const data: PokemonAbility[] = abilitiesList.results.map(result => {
+      return { name: result.name };
+    });
+    setAbility(data);
+    return abilitiesList;
+  }, []);
+
+  useEffect(() => {
+    fetchPokemonAbilities()
+  }, [fetchPokemonAbilities]);
 
   useEffect(() => {
     fetchData(page * rowsPerPage, rowsPerPage);
@@ -85,7 +99,7 @@ export const PokemonTable = () => {
           sx={{ width: "54rem" }}
         />
         <Box>
-          <Button variant="contained" color="secondary" endIcon={<SaveAltRounded/>}>AÑADIR POKEMON</Button>
+          <Button variant="contained" color="secondary" endIcon={<SaveAltRounded/>} onClick={() => console.log(ability)}>AÑADIR POKEMON</Button>
           <Button variant="contained" color="secondary" endIcon={<FilterListRounded/>} style={{ marginLeft: '0.6rem' }}>BÚSQUEDA AVANZADA</Button>
           <Button variant="outlined" endIcon={<InfoOutlined />} style={{ marginLeft: '0.7rem' }} onClick={handleLegendClick}>LEYENDA</Button>
         </Box>

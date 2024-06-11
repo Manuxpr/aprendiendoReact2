@@ -32,3 +32,10 @@ export interface Species {
   name: string;
   url: string;
 }
+
+export interface PokemonAbility{
+  name: string;
+}
+
+
+
