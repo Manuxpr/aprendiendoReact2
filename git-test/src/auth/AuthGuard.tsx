@@ -4,7 +4,7 @@ export const AuthGuard: React.FC = () => {
     const isAuthenticated = !!localStorage.getItem('accessToken');
 
     if (!isAuthenticated) {
-        return <Navigate to="/loginNeoCK" />;
+        return <Navigate to="/" />;
     }
 
     return <Outlet />;
