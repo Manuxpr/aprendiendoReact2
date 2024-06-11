@@ -30,7 +30,8 @@ export const PokemonTable = () => {
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
 
   const debouncedSearchTerm = useDebounce(searchPokem, 500); 
-
+  const open = Boolean(anchorEl);
+  const id = open ? 'simple-popover' : undefined;
 
   useEffect(() => {
     const fetchData = async () => {
@@ -63,9 +64,6 @@ export const PokemonTable = () => {
   const handleLegendClose = () => {
     setAnchorEl(null);
   };
-
-  const open = Boolean(anchorEl);
-  const id = open ? 'simple-popover' : undefined;
 
 
   return (
@@ -112,8 +110,8 @@ export const PokemonTable = () => {
                   ))}
                 </TableCell>
                 <TableCell>
-                  {pokemon.abilities.map((ability, index) => (
-                    <Button key={index} variant="outlined" color="primary" sx={{marginRight:"0.2rem"}}>{ability.ability.name}</Button>
+                  {pokemon.abilities.map((ability) => (
+                    <Button key={ability.ability.name} variant="outlined" color="primary" sx={{marginRight:"0.2rem"}}>{ability.ability.name}</Button>
                   ))}
                 </TableCell>
                 <TableCell>
