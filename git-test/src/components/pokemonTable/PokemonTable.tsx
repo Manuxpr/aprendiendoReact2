@@ -1,4 +1,4 @@
-import { Box, Typography, TextField, Button, TableContainer, Paper, Table, TableHead, TableRow, TableCell, TableBody, Chip, InputAdornment, Popover, TablePagination, Modal, FormControl, InputLabel, Select,SelectChangeEvent } from "@mui/material";
+import { Box, Typography, TextField, Button, TableContainer, Paper, Table, TableHead, TableRow, TableCell, TableBody, Chip, InputAdornment, Popover, TablePagination, Modal, FormControl, InputLabel, Select, SelectChangeEvent, MenuItem } from "@mui/material";
 import { useState, useEffect, useCallback } from "react";
 import { fetchPokemonDataAbilities, fetchPokemonDataTable, fetchPokemonList } from "../../fetchPokemonData";
 import { PokemonAbility, PokemonDataTable, TopLevel } from "../../interfaces/PokemonInterfaces";
@@ -6,6 +6,7 @@ import colors from '../../colors/colorsTheme';
 import { FilterListRounded, InfoOutlined, SaveAltRounded, Search } from "@mui/icons-material";
 import { useDebounce } from "../Debounce";
 import { PokemonLegend, pokemonTypes } from "./LegendPokemonTypes";
+import { StyleModalBox } from "./PokemonTable.style";
 
 export const PokemonTable = () => {
   const [pokemonData, setPokemonData] = useState<PokemonDataTable[]>([]);
@@ -60,7 +61,6 @@ export const PokemonTable = () => {
     setPage(newPage);
     fetchPokemonList(newPage * rowsPerPage, rowsPerPage);
   };
-  
 
   const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newRowsPerPage = Number(event.target.value);
@@ -85,11 +85,11 @@ export const PokemonTable = () => {
 
   const [newPokemon, setNewPokemon] = useState({
     name: '',
-    abilities: [],
-    types: [],
+    abilities: [] as string[],
+    types: [] as string[],
     weight: '',
   });
-  
+
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
     setNewPokemon({
@@ -97,11 +97,36 @@ export const PokemonTable = () => {
       [name]: value,
     });
   };
-    
-  const handleSelectChange = (event: SelectChangeEvent<unknown[]>) => {
+
+  const handleSelectChange = (event: SelectChangeEvent<string[]>) => {
     setNewPokemon({
       ...newPokemon,
       [event.target.name]: event.target.value,
+    });
+  };
+
+  const handleAddPokemon = () => {
+    const newPokemonData: PokemonDataTable = {
+      name: newPokemon.name,
+      abilities: newPokemon.abilities.map(name => ({
+        ability: { name, url: "" },
+        is_hidden: false, 
+        slot: 1 
+      })),
+      types: newPokemon.types.map(name => ({
+        type: { name, url: "" }, 
+        slot: 1 
+      })),
+      weight: parseFloat(newPokemon.weight),
+    };
+  
+    setPokemonData([...pokemonData, newPokemonData]);
+    handleModalClose();
+    setNewPokemon({
+      name: '',
+      abilities: [],
+      types: [],
+      weight: '',
     });
   };
 
@@ -124,8 +149,8 @@ export const PokemonTable = () => {
           sx={{ width: "54rem" }}
         />
         <Box>
-          <Button variant="contained" color="secondary" endIcon={<SaveAltRounded/>} onClick={handleModelOpen}>AÑADIR POKEMON</Button>
-          <Button variant="contained" color="secondary" endIcon={<FilterListRounded/>} style={{ marginLeft: '0.6rem' }}>BÚSQUEDA AVANZADA</Button>
+          <Button variant="contained" color="secondary" endIcon={<SaveAltRounded />} onClick={handleModelOpen}>AÑADIR POKEMON</Button>
+          <Button variant="contained" color="secondary" endIcon={<FilterListRounded />} style={{ marginLeft: '0.6rem' }}>BÚSQUEDA AVANZADA</Button>
           <Button variant="outlined" endIcon={<InfoOutlined />} style={{ marginLeft: '0.7rem' }} onClick={handleLegendClick}>LEYENDA</Button>
         </Box>
       </Box>
@@ -150,25 +175,25 @@ export const PokemonTable = () => {
                 </TableCell>
                 <TableCell>
                   {pokemon.abilities.map((ability) => (
-                    <Button key={ability.ability.name} variant="outlined" color="primary" sx={{marginRight:"0.2rem"}}>{ability.ability.name}</Button>
+                    <Button key={ability.ability.name} variant="outlined" color="primary" sx={{ marginRight: "0.2rem" }}>{ability.ability.name}</Button>
                   ))}
                 </TableCell>
                 <TableCell>
-                  <Button variant="outlined" color="primary" sx={{marginRight:"0.2rem"}}>{pokemon.weight} kgs</Button>
+                  <Button variant="outlined" color="primary" sx={{ marginRight: "0.2rem" }}>{pokemon.weight} kgs</Button>
                 </TableCell>
               </TableRow>
             ))}
-            <TablePagination
-            component="div"
-            count={totalPokemon}
-            page={page}
-            onPageChange={handleChangePage}
-            rowsPerPage={rowsPerPage}
-            onRowsPerPageChange={handleChangeRowsPerPage}
-          />
           </TableBody>
         </Table>
       </TableContainer>
+      <TablePagination
+        component="div"
+        count={totalPokemon}
+        page={page}
+        onPageChange={handleChangePage}
+        rowsPerPage={rowsPerPage}
+        onRowsPerPageChange={handleChangeRowsPerPage}
+      />
       <Popover
         id={id}
         open={open}
@@ -185,78 +210,73 @@ export const PokemonTable = () => {
       >
         <PokemonLegend />
       </Popover>
-
       <Modal
-  open={openModal}
-  onClose={handleModalClose}
-  aria-labelledby="modal-modal-title"
-  aria-describedby="modal-modal-description"
->
-  <Box sx={{
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    width: '80%', 
-    bgcolor: 'background.paper',
-    border: '2px solid #000',
-    boxShadow: 24,
-    p: 4,
-  }}>
-    <Typography id="modal-modal-title" variant="h6" component="h2">
-      Nuevo Pokemon
-    </Typography>
-    <TextField
-      name="name"
-      value={newPokemon.name}
-      onChange={handleInputChange}
-      label="Nombre"
-    />
-    <FormControl>
-      <InputLabel id="abilities-label">Habilidades</InputLabel>
-      <Select
-        labelId="abilities-label"
-        name="abilities"
-        multiple
-        value={newPokemon.abilities}
-        onChange={handleSelectChange}
+        open={openModal}
+        onClose={handleModalClose}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
       >
-        {ability.map((ability) => {
-          return (
-            <Box key={ability.name} display="flex" alignItems="center" gap="1rem">
-              <Button key={ability.name} variant="outlined" color="primary" sx={{marginRight:"0.2rem"}}>{ability.name}</Button>
-            </Box>
-          );
-        })}
-      </Select>
-    </FormControl>
-    <FormControl>
-      <InputLabel id="types-label">Tipos</InputLabel>
-      <Select
-        labelId="types-label"
-        name="types"
-        multiple
-        value={newPokemon.types}
-        onChange={handleSelectChange}
-      >
-        {pokemonTypes.map((type) => (
-          <Box key={type} display="flex" alignItems="center" gap="1rem">
-            <Chip label={type.toUpperCase()} style={{ backgroundColor: colors.chip[type], color: 'white' }} />
-            <Typography variant="body1" style={{ fontWeight: 'bold' }}>
-              {type.charAt(0).toUpperCase() + type.slice(1)}
-            </Typography>
+        <StyleModalBox>
+          <Typography id="modal-modal-title" variant="h6" component="h2">
+            Nuevo Pokemon
+          </Typography>
+          <TextField
+            name="name"
+            value={newPokemon.name}
+            onChange={handleInputChange}
+            label="Nombre"
+            fullWidth
+            sx={{ marginBottom: '1rem' }}
+          />
+          <FormControl fullWidth sx={{ marginBottom: '1rem' }}>
+            <InputLabel id="abilities-label">Habilidades</InputLabel>
+            <Select
+              labelId="abilities-label"
+              name="abilities"
+              multiple
+              value={newPokemon.abilities}
+              onChange={(event) => handleSelectChange(event)}
+              renderValue={(selected) => selected.join(', ')}
+            >
+              {ability.map((ability) => (
+                <MenuItem key={ability.name} value={ability.name}>
+                  {ability.name}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+          <FormControl fullWidth sx={{ marginBottom: '1rem' }}>
+            <InputLabel id="types-label">Tipos</InputLabel>
+            <Select
+              labelId="types-label"
+              name="types"
+              multiple
+              value={newPokemon.types}
+              onChange={(event) => handleSelectChange(event)}
+              renderValue={(selected) => selected.join(', ')}
+            >
+              {pokemonTypes.map((type) => (
+                <MenuItem key={type} value={type}>
+                  <Chip label={type.toUpperCase()} style={{ backgroundColor: colors.chip[type], color: 'white', marginRight: '0.5rem' }} />
+                  {type.charAt(0).toUpperCase() + type.slice(1)}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+          <TextField
+            name="weight"
+            value={newPokemon.weight}
+            onChange={handleInputChange}
+            label="Peso"
+            fullWidth
+            sx={{ marginBottom: '1rem' }}
+          />
+          <Box display="flex" justifyContent="space-between">
+            <Button variant="contained" color="primary" onClick={handleAddPokemon}>Añadir</Button>
+            <Button variant="outlined" onClick={handleModalClose}>Cancelar</Button>
           </Box>
-        ))}
-      </Select>
-    </FormControl>
-    <TextField
-      name="weight"
-      value={newPokemon.weight}
-      onChange={handleInputChange}
-      label="Peso"
-    />
-  </Box>
-</Modal>
+        </StyleModalBox>
+      </Modal>
     </Box>
   );
-}
+};
