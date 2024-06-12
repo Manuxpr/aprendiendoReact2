@@ -42,7 +42,6 @@ export const PokemonTable = () => {
       }
       setPokemonData(data);
     };
-
     fetchData();
   }, []);
 
