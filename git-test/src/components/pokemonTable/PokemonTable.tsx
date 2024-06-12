@@ -46,7 +46,6 @@ export const PokemonTable = () => {
     fetchData();
   }, []);
 
-  console.log(pokemonData);
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchPokem(event.target.value);
@@ -86,8 +85,8 @@ export const PokemonTable = () => {
         />
         <Box>
           <Button variant="contained" color="secondary" endIcon={<SaveAltRounded/>}>EXPORTAR TABLA</Button>
-          <Button variant="contained" color="secondary" endIcon={<FilterListRounded/>} style={{ marginLeft: '0.6rem' }}>BÚSQUEDA AVANZADA</Button>
-          <Button variant="outlined" endIcon={<InfoOutlined />} style={{ marginLeft: '0.7rem' }} onClick={handleLegendClick}>LEYENDA</Button>
+          <Button variant="contained" color="secondary" endIcon={<FilterListRounded/>} sx={{ marginLeft: '0.6rem' }}>BÚSQUEDA AVANZADA</Button>
+          <Button variant="outlined" endIcon={<InfoOutlined />} sx={{ marginLeft: '0.7rem' }} onClick={handleLegendClick}>LEYENDA</Button>
         </Box>
       </Box>
       <TableContainer component={Paper}>
@@ -106,7 +105,7 @@ export const PokemonTable = () => {
                 <TableCell>{pokemon.name}</TableCell>
                 <TableCell>
                   {pokemon.types.map((type) => (
-                    <Chip label={type.type.name} key={type.type.name} style={{ margin: '2px', backgroundColor: colors.chip[type.type.name] }} />
+                    <Chip label={type.type.name} key={type.type.name} sx={{ margin: '2px', backgroundColor: colors.chip[type.type.name] }} />
                   ))}
                 </TableCell>
                 <TableCell>
